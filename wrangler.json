@@ -9,7 +9,13 @@
   "compatibility_date": "2025-01-09",
   "observability": {
     "enabled": true
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "MESSAGES",
+      "id": "your_kv_namespace_id"
+    }
+  ]
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
