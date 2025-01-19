@@ -32,8 +32,11 @@ export default {
 		} else if (request.method === 'POST') {
 			const formData = await request.formData();
 			const message = formData.get('message');
-			await env.MESSAGES.put('message', message);
-			return new Response('Message stored successfully!');
+			const timestamp = new Date().toISOString();
+			const messageWithTimestamp = `${message} - ${timestamp}`;
+			await env.MESSAGES.put('message', messageWithTimestamp);
+			const storedMessage = await env.MESSAGES.get('message');
+			return new Response(`Stored message: ${storedMessage}`);
 		} else {
 			return new Response('Method not allowed', { status: 405 });
 		}
