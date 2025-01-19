@@ -18,3 +18,26 @@ describe('Hello World worker', () => {
 		expect(await response.text()).toMatchInlineSnapshot(`"Hello World!"`);
 	});
 });
+
+describe('Message worker', () => {
+	it('stores a message with timestamp (POST request)', async () => {
+		const request = new Request('http://example.com', {
+			method: 'POST',
+			body: new URLSearchParams({ message: 'Test message' }),
+		});
+		const ctx = createExecutionContext();
+		const response = await worker.fetch(request, env, ctx);
+		await waitOnExecutionContext(ctx);
+		const responseText = await response.text();
+		expect(responseText).toContain('Stored message: Test message - ');
+	});
+
+	it('retrieves the stored message (GET request)', async () => {
+		const request = new Request('http://example.com');
+		const ctx = createExecutionContext();
+		const response = await worker.fetch(request, env, ctx);
+		await waitOnExecutionContext(ctx);
+		const responseText = await response.text();
+		expect(responseText).toContain('<label for="message">Enter your message:</label>');
+	});
+});
