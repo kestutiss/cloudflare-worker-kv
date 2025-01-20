@@ -1,0 +1,13 @@
+name = "cloudflare-worker-kv"
+type = "javascript"
+compatibility_date = "2025-01-09"
+
+[durable_objects]
+bindings = [
+  { name = "MESSAGE_OBJECT", class_name = "MessageObject" }
+]
+
+[kv_namespaces]
+bindings = [
+  { binding = "MESSAGES", id = "8c2e6388b8d5443e9c3d563809e766c9" }
+]
