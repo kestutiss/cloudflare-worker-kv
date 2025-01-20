@@ -1,22 +1,17 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { MessageObject } from './messageObject';
 
 export default {
 	async fetch(request, env, ctx) {
+		const id = env.MESSAGE_OBJECT.idFromName('MESSAGE_OBJECT');
+		const obj = env.MESSAGE_OBJECT.get(id);
+
 		if (request.method === 'GET') {
 			const html = `
 				<!DOCTYPE html>
 				<html>
 				<head>
 					<title>Message Form</title>
-				</head>
+					</head>
 				<body>
 					<form method="POST">
 						<label for="message">Enter your message:</label>
@@ -34,8 +29,11 @@ export default {
 			const message = formData.get('message');
 			const timestamp = new Date().toISOString();
 			const messageWithTimestamp = `${message} - ${timestamp}`;
-			await env.MESSAGES.put('message', messageWithTimestamp);
-			const storedMessage = await env.MESSAGES.get('message');
+			const response = await obj.fetch('http://message-object', {
+				method: 'POST',
+				body: JSON.stringify({ message: messageWithTimestamp }),
+			});
+			const storedMessage = await response.text();
 			return new Response(`Stored message: ${storedMessage}`);
 		} else {
 			return new Response('Method not allowed', { status: 405 });
